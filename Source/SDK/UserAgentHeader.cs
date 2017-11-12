@@ -87,6 +87,8 @@ namespace PayPal.Api
                 return "4.5";
 #elif NET_4_5_1
                 return "4.5.1";
+#elif NETSTANDARD2_0
+                return "STANDARD 2.0";
 #endif
             }
         }

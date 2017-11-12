@@ -1,11 +1,10 @@
+using PayPal.Api;
 using System;
-using System.Web;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 using System.Text.RegularExpressions;
-using PayPal.Api;
-using Microsoft.Win32;
+using System.Web;
 
 namespace PayPal.Util
 {
@@ -312,6 +311,9 @@ namespace PayPal.Util
         {
             Version highestNetVersion = null;
 
+#if NETSTANDARD2_0
+            highestNetVersion = new Version(4, 6, 1, 0);
+#else
             try
             {
                 // Opens the registry key for the .NET Framework entry.
@@ -358,11 +360,12 @@ namespace PayPal.Util
                 }
             }
             catch (Exception) { }
+#endif
 
             return highestNetVersion;
         }
 
-        #region Obsolete Methods
+#region Obsolete Methods
         /// <summary>
         /// Gets the resource token from an approval URL HATEOAS link, if found.
         /// </summary>
@@ -374,6 +377,6 @@ namespace PayPal.Util
             var resource = new PayPalRelationalObject { links = links };
             return resource.GetTokenFromApprovalUrl();
         }
-        #endregion
+#endregion
     }
 }
