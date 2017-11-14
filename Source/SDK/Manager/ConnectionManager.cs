@@ -1,8 +1,7 @@
+using PayPal.Log;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using PayPal.Log;
-using PayPal.Util;
 
 namespace PayPal.Api
 {
@@ -34,7 +33,7 @@ namespace PayPal.Api
         /// </summary>
         private ConnectionManager()
         {
-#if NET_4_5 || NET_4_5_1
+#if NET_4_5 || NET_4_5_1 || NETSTANDARD2_0
             ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
 #else
             if(SDKUtil.IsNet45OrLaterDetected())
@@ -92,11 +91,13 @@ namespace PayPal.Api
                 httpRequest.Proxy = requestProxy;
             }
 
+#if !NETSTANDARD2_0
             // Don't set the Expect: 100-continue header as it's not supported
             // well by Akamai and can negatively impact performance.
             httpRequest.ServicePoint.Expect100Continue = false;
+#endif
 
-            if(this.logTlsWarning)
+            if (this.logTlsWarning)
             {
                 logger.Warn("SECURITY WARNING: TLSv1.2 is not supported on this system. Please update your .NET framework to a version that supports TLSv1.2.");
             }
